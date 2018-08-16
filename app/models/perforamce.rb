@@ -1,0 +1,2 @@
+class Perforamce < ApplicationRecord
+end

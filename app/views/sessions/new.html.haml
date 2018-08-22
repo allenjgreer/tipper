@@ -1,0 +1,10 @@
+%h1 Log In
+= form_for :login do |f|
+  .email
+    = f.label :email
+    = f.text_field :email, autofocus: true
+  .password
+    = f.label :password
+    = f.password_field :password
+  .submit
+    = f.submit "Login!"

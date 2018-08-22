@@ -8,8 +8,50 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
+    - if current_user
+      = "Logged in as #{current_user.email}"
+      = link_to 'Home', root_path
+      = link_to 'Log Out', logout_path, method: :delete
+    - else
+      = link_to 'Home', root_path
+      = link_to 'Log In', login_path
+      = link_to 'Sign Up', new_user_path
     - if notice
       = notice
     - if alert
       = alert
-    = yield
+    = javascript_include_tag "https://js.stripe.com/v3/"
+    #payment-request-button
+
+:javascript
+  $(function(){
+    var stripe = Stripe("pk_test_c7B9rQjfBighbE8rP9fzZRKU", {
+      stripeAccount: "ca_DS2DzpakKKbCHKY0UckLrtRf2YURZpQb"
+    });
+
+    var paymentRequest = stripe.paymentRequest({
+      country: 'US',
+      currency: 'usd',
+      total: {
+        label: 'Demo total',
+        amount: 1000,
+      },
+    requestPayerName: true,
+    requestPayerEmail: true,
+   });
+   var elements = stripe.elements();
+   var prButton = elements.create('paymentRequestButton', {
+     paymentRequest: paymentRequest,
+   });
+
+   // Check the availability of the Payment Request API first.
+   paymentRequest.canMakePayment().then(function(result) {
+     if (result) {
+       prButton.mount('#payment-request-button');
+     } else {
+       document.getElementById('payment-request-button').style.display = 'none';
+     }
+   });
+  });
+= yield
+

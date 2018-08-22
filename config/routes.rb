@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'users/show'
   get 'users/new'
   root to: 'users#new'
 
@@ -7,6 +8,9 @@ Rails.application.routes.draw do
 
 	# create (post) action for when sign up form is submitted:
 	post 'users' => 'users#create'
+
+  # get users
+  get 'users/:id' => 'users#show'
 
   # log in page with form:
 	get '/login' => 'sessions#new'
